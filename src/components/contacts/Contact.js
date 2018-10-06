@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Consumer } from '../context';
+import { Consumer } from '../../context';
 
 //Como é um componente não funcional, acedemos a variaveis através de  this.props, num componente funcional basta props.
 class Contact extends Component {
