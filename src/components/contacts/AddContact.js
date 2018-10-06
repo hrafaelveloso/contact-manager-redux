@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { Consumer } from '../../context';
+import TextInputGroup from '../layout/TextInputGroup';
 import uuid from 'uuid';
 
 class AddContact extends Component {
   state = {
     name: '',
     email: '',
-    phone: ''
+    phone: '',
+    errors: {}
   };
 
+  //Como cada name de cada elemento corresponde ao nome no state, pode-se fazer desta forma
   onChange = e =>
     this.setState({
       [e.target.name]: e.target.value
@@ -17,6 +20,35 @@ class AddContact extends Component {
   onSubmit = (dispatch, e) => {
     e.preventDefault();
     const { name, email, phone } = this.state;
+
+    //Validar o recebido, a ver se há erros
+
+    if (name === '') {
+      this.setState({
+        errors: {
+          name: 'É necessário introduzir o nome!'
+        }
+      });
+      return;
+    }
+
+    if (email === '') {
+      this.setState({
+        errors: {
+          email: 'É necessário introduzir o email!'
+        }
+      });
+      return;
+    }
+
+    if (phone === '') {
+      this.setState({
+        errors: {
+          phone: 'É necessário introduzir o número de telemóvel'
+        }
+      });
+      return;
+    }
 
     const newContact = {
       id: uuid(),
@@ -29,10 +61,20 @@ class AddContact extends Component {
       type: 'ADD_CONTACT',
       payload: newContact
     });
+
+    //Limpar os inputs, reinicia o estado do form
+    this.setState({
+      name: '',
+      email: '',
+      phone: '',
+      errors: {}
+    });
+
+    this.props.history.push('/');
   };
 
   render() {
-    const { name, email, phone } = this.state;
+    const { name, email, phone, errors } = this.state;
 
     return (
       <Consumer>
@@ -43,39 +85,31 @@ class AddContact extends Component {
               <div className="card-header">Add contact</div>
               <div className="card-body">
                 <form onSubmit={this.onSubmit.bind(this, dispatch)}>
-                  <div className="form-group">
-                    <label htmlFor="name">Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      className="form-control form-control-lg"
-                      placeholder="Introduzir nome..."
-                      value={name}
-                      onChange={this.onChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      className="form-control form-control-lg"
-                      placeholder="Introduzir email..."
-                      value={email}
-                      onChange={this.onChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="email">Telemóvel</label>
-                    <input
-                      type="text"
-                      name="phone"
-                      className="form-control form-control-lg"
-                      placeholder="Introduzir telemóvel..."
-                      value={phone}
-                      onChange={this.onChange}
-                    />
-                  </div>
+                  <TextInputGroup
+                    label="Nome"
+                    name="name"
+                    placeholder="Introduzir nome..."
+                    value={name}
+                    onChange={this.onChange}
+                    error={errors.name}
+                  />
+                  <TextInputGroup
+                    label="Email"
+                    type="email"
+                    name="email"
+                    placeholder="Introduzir email..."
+                    value={email}
+                    onChange={this.onChange}
+                    error={errors.email}
+                  />
+                  <TextInputGroup
+                    label="Telemóvel"
+                    name="phone"
+                    placeholder="Introduzir telemóvel..."
+                    value={phone}
+                    onChange={this.onChange}
+                    error={errors.phone}
+                  />
                   <input
                     type="submit"
                     value="Add contact"

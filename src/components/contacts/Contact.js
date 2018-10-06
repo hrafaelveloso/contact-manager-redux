@@ -38,7 +38,7 @@ class Contact extends Component {
                 {name}
                 <i
                   onClick={this.onArrowClick}
-                  className="fas fa-sort-down"
+                  className="fas fa-sort-down ml-3"
                   style={{ cursor: 'pointer' }}
                 />
                 <i
