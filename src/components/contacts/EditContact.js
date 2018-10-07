@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
 import TextInputGroup from '../layout/TextInputGroup';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { addContact } from '../../actions/contactActions';
-import uuid from 'uuid';
 
-class AddContact extends Component {
+class EditContact extends Component {
   state = {
     name: '',
     email: '',
@@ -52,14 +48,13 @@ class AddContact extends Component {
       return;
     }
 
-    const newContact = {
-      id: uuid(),
+    const updatedContact = {
       name,
       email,
       phone
     };
 
-    this.props.addContact(newContact);
+    const { id } = this.props.match.params;
 
     //Limpar os inputs, reinicia o estado do form
     this.setState({
@@ -77,9 +72,9 @@ class AddContact extends Component {
 
     return (
       <div className="card mb-3">
-        <div className="card-header">Adicionar contacto</div>
+        <div className="card-header">Editar contacto</div>
         <div className="card-body">
-          <form onSubmit={this.onSubmit}>
+          <form onSubmit={this.onSubmit.bind(this)}>
             <TextInputGroup
               label="Nome"
               name="name"
@@ -107,7 +102,7 @@ class AddContact extends Component {
             />
             <input
               type="submit"
-              value="Adicionar contact"
+              value="Atualizar contacto"
               className="btn btn-light btn-block"
             />
           </form>
@@ -117,7 +112,4 @@ class AddContact extends Component {
   }
 }
 
-export default connect(
-  null,
-  { addContact }
-)(AddContact);
+export default EditContact;

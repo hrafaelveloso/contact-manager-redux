@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Consumer } from '../../context';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { deleteContact } from '../../actions/contactActions';
 
 //Como é um componente não funcional, acedemos a variaveis através de  this.props, num componente funcional basta props.
 class Contact extends Component {
@@ -16,11 +18,9 @@ class Contact extends Component {
     });
   };
 
-  onDeleteClick = (id, dispatch) => {
-    dispatch({
-      type: 'DELETE_CONTACT',
-      payload: id
-    });
+  //Quando se clica para apagar o contacto
+  onDeleteClick = id => {
+    this.props.deleteContact(id);
   };
 
   render() {
@@ -29,44 +29,52 @@ class Contact extends Component {
     const showContactInfo = this.state.showContactInfo;
 
     return (
-      <Consumer>
-        {value => {
-          const { dispatch } = value;
-          return (
-            <div className="card card-body mb-3">
-              <h4>
-                {name}
-                <i
-                  onClick={this.onArrowClick}
-                  className="fas fa-sort-down ml-3"
-                  style={{ cursor: 'pointer' }}
-                />
-                <i
-                  className="fas fa-times"
-                  style={{
-                    cursor: 'pointer',
-                    float: 'right',
-                    color: 'red'
-                  }}
-                  onClick={this.onDeleteClick.bind(this, id, dispatch)}
-                />
-              </h4>
-              {showContactInfo ? (
-                <ul className="list-group">
-                  <li className="list-group-item">Email: {email}</li>
-                  <li className="list-group-item">Telemóvel: {phone}</li>
-                </ul>
-              ) : null}
-            </div>
-          );
-        }}
-      </Consumer>
+      <div className="card card-body mb-3">
+        <h4>
+          {name}
+          <i
+            onClick={this.onArrowClick}
+            className="fas fa-sort-down ml-3"
+            style={{ cursor: 'pointer' }}
+          />
+          <i
+            className="fas fa-times"
+            style={{
+              cursor: 'pointer',
+              float: 'right',
+              color: 'red'
+            }}
+            onClick={this.onDeleteClick.bind(this, id)}
+          />
+          <Link to={`/contact/edit/${id}`}>
+            <i
+              className="fas fa-pencil-alt mr-2"
+              style={{
+                cursor: 'pointer',
+                float: 'right',
+                color: 'black'
+              }}
+            />
+          </Link>
+        </h4>
+        {showContactInfo ? (
+          <ul className="list-group">
+            <li className="list-group-item">Email: {email}</li>
+            <li className="list-group-item">Telemóvel: {phone}</li>
+          </ul>
+        ) : null}
+      </div>
     );
   }
 }
 
 Contact.propTypes = {
-  contact: PropTypes.object.isRequired
+  contact: PropTypes.object.isRequired,
+  deleteContact: PropTypes.func.isRequired
 };
 
-export default Contact;
+//Sem mapStateToProps no connect()
+export default connect(
+  null,
+  { deleteContact }
+)(Contact);
