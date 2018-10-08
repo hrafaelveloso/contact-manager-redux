@@ -14,9 +14,12 @@ class EditContact extends Component {
 
   componentDidMount() {
     const { id } = this.props.match.params;
+
+    //Obtem o contacto baseado no id, esta funcao define tambem o estado .contact do state geral
     this.props.getContact(id);
   }
 
+  //Atualiza o estado para o contacto com o id escolhido
   componentWillReceiveProps(nextProps, nextState) {
     const { name, email, phone } = nextProps.contact;
 
