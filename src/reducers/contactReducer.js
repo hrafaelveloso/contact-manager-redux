@@ -1,33 +1,29 @@
-import { GET_CONTACTS, DELETE_CONTACT, ADD_CONTACT } from '../actions/types';
+import {
+  GET_CONTACTS,
+  DELETE_CONTACT,
+  ADD_CONTACT,
+  GET_CONTACT,
+  UPDATE_CONTACT
+} from '../actions/types';
 
 const initialState = {
-  contacts: [
-    {
-      id: 1,
-      name: 'Hélder Veloso',
-      email: 'rafaelcostaveloso@gmail.com',
-      phone: '913056888'
-    },
-    {
-      id: 2,
-      name: 'Jorge Bastos',
-      email: 'jorgepbastos8@gmail.com',
-      phone: '933339874'
-    },
-    {
-      id: 3,
-      name: 'Simão Rocha',
-      email: 'simaoptrocha@gmail.com',
-      phone: '917710297'
-    }
-  ]
+  //Todos os contactos
+  contacts: [],
+  //Contacto que está a ser visto
+  contact: {}
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
     case GET_CONTACTS:
       return {
-        ...state
+        ...state,
+        contacts: action.payload
+      };
+    case GET_CONTACT:
+      return {
+        ...state,
+        contact: action.payload
       };
     case DELETE_CONTACT:
       return {
@@ -40,6 +36,16 @@ export default function(state = initialState, action) {
       return {
         ...state,
         contacts: [action.payload, ...state.contacts]
+      };
+    case UPDATE_CONTACT:
+      return {
+        ...state,
+        contacts: state.contacts.map(
+          contact =>
+            contact.id === action.payload.id
+              ? (contact = action.payload)
+              : contact
+        )
       };
     default:
       return state;

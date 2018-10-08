@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import TextInputGroup from '../layout/TextInputGroup';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { getContact, updateContact } from '../../actions/contactActions';
 
 class EditContact extends Component {
   state = {
@@ -8,6 +11,17 @@ class EditContact extends Component {
     phone: '',
     errors: {}
   };
+
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    this.props.getContact(id);
+  }
+
+  componentWillReceiveProps(nextProps, nextState) {
+    const { name, email, phone } = nextProps.contact;
+
+    this.setState({ name, email, phone });
+  }
 
   //Como cada name de cada elemento corresponde ao nome no state, pode-se fazer desta forma
   onChange = e =>
@@ -48,13 +62,16 @@ class EditContact extends Component {
       return;
     }
 
+    const { id } = this.props.match.params;
+
     const updatedContact = {
+      id,
       name,
       email,
       phone
     };
 
-    const { id } = this.props.match.params;
+    this.props.updateContact(updatedContact);
 
     //Limpar os inputs, reinicia o estado do form
     this.setState({
@@ -112,4 +129,17 @@ class EditContact extends Component {
   }
 }
 
-export default EditContact;
+EditContact.propTypes = {
+  contact: PropTypes.object.isRequired,
+  getContact: PropTypes.func.isRequired,
+  updateContact: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  contact: state.contact.contact
+});
+
+export default connect(
+  mapStateToProps,
+  { getContact, updateContact }
+)(EditContact);
